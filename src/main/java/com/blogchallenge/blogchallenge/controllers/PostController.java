@@ -84,16 +84,15 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public List<Post> getAllPosts() {
-        return postService.getAllPosts();
-    }
-    
-    @PostMapping("/postFromClient/{postId}")
-    public Optional<Post> createPost(@PathVariable Long postId) {
-        return postService.processPost(postId);
-    }
+    public ResponseEntity<?> getAllPosts(
+    @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+    @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize,
+    @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy,
+    @RequestParam(value = "sortDir", defaultValue = "asc", required = false) String sortDir) {
 
-
+        Optional<List<Post>> post = postService.getAllPosts(pageNo, pageSize, sortBy, sortDir);
+        return ResponseEntity.status(HttpStatus.OK).body(post);
+    }
 
     @GetMapping("/posts/{postId}/comments")
     public List<Comment> getCommentsForPostOnClient(@PathVariable Long postId) {

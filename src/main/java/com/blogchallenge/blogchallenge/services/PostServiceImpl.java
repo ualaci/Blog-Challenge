@@ -8,6 +8,9 @@ import com.blogchallenge.blogchallenge.entities.PostStates;
 import com.blogchallenge.blogchallenge.exceptions.BlogAPIException;
 import com.blogchallenge.blogchallenge.exceptions.FailedException;
 import com.blogchallenge.blogchallenge.repositories.PostRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -171,8 +174,14 @@ public class PostServiceImpl implements PostService {
         return Optional.of(postRepository.save(post));
     }
 
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public Optional<List<Post>> getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        return Optional.ofNullable(Optional.of(postRepository.findAll(pageable).getContent())
+                .orElseThrow(() -> new BlogAPIException(HttpStatus.NOT_FOUND, "No posts found!")));
     }
 
     public List<Post> getAllPostsFromClient() {
