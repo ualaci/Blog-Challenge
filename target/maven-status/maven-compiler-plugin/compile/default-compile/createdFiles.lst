@@ -1,0 +1,9 @@
+com\blogchallenge\blogchallenge\entities\Post.class
+com\blogchallenge\blogchallenge\entities\Comment.class
+com\blogchallenge\blogchallenge\BlogChallengeApplication.class
+com\blogchallenge\blogchallenge\JsonPlaceHolderClient.class
+com\blogchallenge\blogchallenge\services\PostServiceImpl.class
+com\blogchallenge\blogchallenge\controllers\PostController.class
+com\blogchallenge\blogchallenge\entities\Post$PostBuilder.class
+com\blogchallenge\blogchallenge\entities\Comment$CommentBuilder.class
+com\blogchallenge\blogchallenge\services\PostService.class
