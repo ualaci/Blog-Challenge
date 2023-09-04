@@ -134,29 +134,6 @@ public class PostServiceImpl implements PostService {
         return Optional.of(postRepository.save(post));
     }
 
-    /*public Optional<Post> reprocessPost(Long id){
-        Optional<Post> optionalPost = postRepository.findById(id);
-        Post clientPost = getPostByIdFromClient(id);
-        Post post = optionalPost.orElseThrow(()-> new FailedException("Post","id", id));
-        History lastHistory = post.getHistory().get(post.getHistory().size()-1);
-        if(!(lastHistory.getState().equals(PostStates.DISABLED)) && !(lastHistory.getState().equals(PostStates.ENABLED))){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST,"Post must be DISABLED or ENABLED to be updated!");
-        }
-        //Create a new post with the updated data from client, but keeps the history from the old post
-        Post newPost = Post.builder()
-                .id(clientPost.getId())
-                .title(clientPost.getTitle())
-                .userId(clientPost.getUserId())
-                .creationDate(post.getCreationDate())
-                .comments(findAndUpdateComments(id).orElseThrow(()-> new FailedException("Comments from Post","id", id)).getComments())
-                .history(post.getHistory())
-                .isReprocessed(true)
-                .build();
-
-        post.addHistory(createHistory(post, PostStates.POST_FIND));
-        return Optional.of(postRepository.save(newPost));
-    }*/
-
     public Optional<Post> reprocessPost(Long id){
         if (id > 100) {
             throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Post id must be less than 100!");
@@ -168,9 +145,10 @@ public class PostServiceImpl implements PostService {
             throw new BlogAPIException(HttpStatus.BAD_REQUEST,"Post must be DISABLED or ENABLED to be updated!");
         }
         post.setReprocessed(true);
-        post.setHistory(new ArrayList<>());
+        //post.setHistory(new ArrayList<>());
         post.setComments(new ArrayList<>());
         post.addHistory(createHistory(post, PostStates.UPDATING));
+        post.addHistory(createHistory(post, PostStates.POST_FIND));
         return Optional.of(postRepository.save(post));
     }
 
